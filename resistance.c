@@ -22,9 +22,13 @@ float calc_resistance(int count, char conn, float *array)
     {
       resistance = getSerialResistorValue(count, array);
     }
-  else
+  else if ('P' == conn)
     {
       resistance = getParallelResistorValue(count, array);
+    }
+  else
+    {
+      return ERROR_CODE;
     }
 
   return resistance;
@@ -73,6 +77,10 @@ float getParallelResistorValue(int count, float *resistors)
   int i = 0;
   for (i = 0; i < count; ++i)
     {
+      if (0 == resistors[i])
+	{
+	  return 0;
+	}
       resistance += 1.0/resistors[i];
     }
   return 1.0/resistance;

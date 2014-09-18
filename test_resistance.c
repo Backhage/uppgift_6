@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "resistance.h"
 
 static void testErrorCountValueLessThan1();
@@ -10,6 +11,7 @@ static void testSingleParallel100OhmResistor();
 static void testTwoSerial100OhmResistors();
 static void testTwoParallel100OhmResistors();
 static void testParallelResistorsThatGivesDecimalValue();
+static void testZeroValueParallelResistor();
 
 /*---------------------------------------------------------------------------*/
 int main()
@@ -22,7 +24,9 @@ int main()
   testTwoSerial100OhmResistors();
   testTwoParallel100OhmResistors();
   testParallelResistorsThatGivesDecimalValue();
+  testZeroValueParallelResistor();
 
+  printf("All tests passed!\n");
   exit(EXIT_SUCCESS);
 }
 
@@ -88,4 +92,11 @@ void testParallelResistorsThatGivesDecimalValue()
   resistors[0] = 25;
   resistors[1] = 25;
   assert(12.5 == calc_resistance(2, 'P', resistors));
+}
+
+/*---------------------------------------------------------------------------*/
+void testZeroValueParallelResistor()
+{
+  float resistors[5] = {10, 20, 0, 30, 100};
+  assert(0 == calc_resistance(5, 'P', resistors));
 }
