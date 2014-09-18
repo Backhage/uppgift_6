@@ -1,8 +1,10 @@
+#include <assert.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include "resistance.h"
 
 /*---------------------------------------------------------------------------*/
-static int invalidParamsSupplied(int count, char conn, float *array);
+static bool validParamsSupplied(int count, char conn, float *array);
 static float getSerialResistorValue(int count, float *resistors);
 static float getParallelResistorValue(int count, float *resistors);
 
@@ -11,9 +13,8 @@ float calc_resistance(int count, char conn, float *array)
 {
   const int ERROR_CODE = -1;
   float resistance = 0;
-  int i = 0;
 
-  if (invalidParamsSupplied(count, conn, array))
+  if (!validParamsSupplied(count, conn, array))
     {
       return ERROR_CODE;
     }
@@ -28,34 +29,31 @@ float calc_resistance(int count, char conn, float *array)
     }
   else
     {
-      return ERROR_CODE;
+      /* If we get here there is a bug in the params check. Abort! */
+      assert(false);
     }
 
   return resistance;
 }
 
 /*---------------------------------------------------------------------------*/
-int invalidParamsSupplied(int count, char conn, float *array)
+bool validParamsSupplied(int count, char conn, float *array)
 {
-  const int INVALID = 1;
-  const int VALID = 0;
-
+  bool isValid = true;
   if (count <= 0)
     {
-      return INVALID;
+      isValid = false;
     }
-
-  if (conn != 'S' && conn != 'P')
+  else if (conn != 'S' && conn != 'P')
     {
-      return INVALID;
+      isValid = false;
     }
-
-  if (array == NULL)
+  else if (array == NULL)
     {
-      return INVALID;
+      isValid = false;
     }
 
-  return VALID;
+  return isValid;
 }
 
 /*---------------------------------------------------------------------------*/
