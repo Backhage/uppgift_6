@@ -11,6 +11,7 @@ else
 LIBDIR=/usr/lib
 endif
 #MAIN_DEBUG=-D _MAIN_DEBUG__
+EXECDIR=/usr/bin
 DEBUG=$(MAIN_DEBUG)
 CFLAGS=-Wall -fPIC $(DEBUG)
 LIBCFLAGS=$(CFLAGS) --shared
@@ -24,7 +25,7 @@ all: lib program
 program: main.o
 	$(CC) $(CFLAGS) $(LDFLAGS) $(LIBS) -o $(PROG) main.o
 
-main.o: main.c resistance.h power.h e_resistance.h
+main.o: main.c resistance.h power.h component.h
 	$(CC) -c main.c
 
 
@@ -43,6 +44,8 @@ clean:
 
 install:
 	@$(foreach LIBOBJ,$(LIBOBJS),echo "Installing lib$(LIBOBJ) to $(LIBDIR)"; $(INSTCMD) lib$(LIBOBJ) $(LIBDIR);)
+	@$(INSTCMD) $(PROG) $(EXECDIR)
 
 uninstall:
 	@$(foreach LIBOBJ,$(LIBOBJS),echo "Deleting lib$(LIBOBJ) from $(LIBDIR)"; rm -f $(LIBDIR)/lib$(LIBOBJ);)	
+	-@rm -f $(EXECDIR)/$(PROG)

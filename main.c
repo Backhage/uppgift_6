@@ -3,7 +3,7 @@
 #include <string.h>
 #include "resistance.h"
 #include "power.h"
-#include "e_resistance.h"
+#include "component.h"
 
 char *get_input(char *s)
 {
