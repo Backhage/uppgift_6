@@ -1,30 +1,85 @@
+#include <assert.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include "resistance.h"
 
+/*---------------------------------------------------------------------------*/
+static bool validParamsSupplied(int count, char conn, float *array);
+static float getSerialResistorValue(int count, float *resistors);
+static float getParallelResistorValue(int count, float *resistors);
+
+/*---------------------------------------------------------------------------*/
 float calc_resistance(int count, char conn, float *array)
 {
   const int ERROR_CODE = -1;
   float resistance = 0;
-  int i = 0;
 
+  if (!validParamsSupplied(count, conn, array))
+    {
+      return ERROR_CODE;
+    }
+
+  if ('S' == conn)
+    {
+      resistance = getSerialResistorValue(count, array);
+    }
+  else if ('P' == conn)
+    {
+      resistance = getParallelResistorValue(count, array);
+    }
+  else
+    {
+      /* If we get here there is a bug in the params check. Abort! */
+      assert(false);
+    }
+
+  return resistance;
+}
+
+/*---------------------------------------------------------------------------*/
+bool validParamsSupplied(int count, char conn, float *array)
+{
+  bool isValid = true;
   if (count <= 0)
     {
-      return ERROR_CODE;
+      isValid = false;
     }
-
-  if (conn != 'S' && conn != 'P')
+  else if (conn != 'S' && conn != 'P')
     {
-      return ERROR_CODE;
+      isValid = false;
     }
-
-  if (array == NULL)
+  else if (array == NULL)
     {
-      return ERROR_CODE;
+      isValid = false;
     }
 
+  return isValid;
+}
+
+/*---------------------------------------------------------------------------*/
+float getSerialResistorValue(int count, float *resistors)
+{
+  float resistance = 0;
+  int i = 0;
   for (i = 0; i < count; ++i)
     {
-      resistance += array[i];
+      resistance += resistors[i];
     }
   return resistance;
+}
+
+/*---------------------------------------------------------------------------*/
+float getParallelResistorValue(int count, float *resistors)
+{
+  float resistance = 0;
+  int i = 0;
+  for (i = 0; i < count; ++i)
+    {
+      if (0 == resistors[i])
+	{
+	  return 0;
+	}
+      resistance += 1.0/resistors[i];
+    }
+  return 1.0/resistance;
 }
