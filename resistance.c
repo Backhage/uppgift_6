@@ -15,23 +15,23 @@ float calc_resistance(int count, char conn, float *array)
   float resistance = 0;
 
   if (!validParamsSupplied(count, conn, array))
-    {
-      return ERROR_CODE;
-    }
+  {
+    return ERROR_CODE;
+  }
 
   if ('S' == conn)
-    {
-      resistance = getSerialResistorValue(count, array);
-    }
+  {
+    resistance = getSerialResistorValue(count, array);
+  }
   else if ('P' == conn)
-    {
-      resistance = getParallelResistorValue(count, array);
-    }
+  {
+    resistance = getParallelResistorValue(count, array);
+  }
   else
-    {
-      /* If we get here there is a bug in the params check. Abort! */
-      assert(false);
-    }
+  {
+    /* If we get here there is a bug in the params check. Abort! */
+    assert(false);
+  }
 
   return resistance;
 }
@@ -41,17 +41,17 @@ bool validParamsSupplied(int count, char conn, float *array)
 {
   bool isValid = true;
   if (count <= 0)
-    {
-      isValid = false;
-    }
+  {
+    isValid = false;
+  }
   else if (conn != 'S' && conn != 'P')
-    {
-      isValid = false;
-    }
+  {
+    isValid = false;
+  }
   else if (array == NULL)
-    {
-      isValid = false;
-    }
+  {
+    isValid = false;
+  }
 
   return isValid;
 }
@@ -62,9 +62,10 @@ float getSerialResistorValue(int count, float *resistors)
   float resistance = 0;
   int i = 0;
   for (i = 0; i < count; ++i)
-    {
-      resistance += resistors[i];
-    }
+  {
+    resistance += resistors[i];
+  }
+
   return resistance;
 }
 
@@ -74,12 +75,13 @@ float getParallelResistorValue(int count, float *resistors)
   float resistance = 0;
   int i = 0;
   for (i = 0; i < count; ++i)
+  {
+    if (0 == resistors[i])
     {
-      if (0 == resistors[i])
-	{
-	  return 0;
-	}
-      resistance += 1.0/resistors[i];
+      return 0;
     }
+    resistance += 1.0/resistors[i];
+  }
+
   return 1.0/resistance;
 }
