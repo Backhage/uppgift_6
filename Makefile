@@ -15,8 +15,8 @@ DEBUG=$(MAIN_DEBUG)
 CFLAGS=-Wall -fPIC $(DEBUG)
 LIBCFLAGS=$(CFLAGS) --shared
 LDFLAGS=-L .
-LIBS=-lcomponent -lpower -lresistance
-LIBOBJS=component.so power.so resistance.so
+LIBS=-le_resistance -lpower -lresistance
+LIBOBJS=e_resistance.so power.so resistance.so
 
 
 all: lib program
@@ -24,7 +24,7 @@ all: lib program
 program: main.o
 	$(CC) $(CFLAGS) $(LDFLAGS) $(LIBS) -o $(PROG) main.o
 
-main.o: main.c resistance.h power.h component.h
+main.o: main.c resistance.h power.h e_resistance.h
 	$(CC) -c main.c
 
 
@@ -39,7 +39,7 @@ lib: $(LIBOBJS)
 	$(CC) -c $(CFLAGS) $< -o $@
 
 clean:
-	-rm -f *.o *.so
+	-rm -f *.o *.so $(PROG)
 
 test:
 	@$(foreach LIBOBJ,$(LIBOBJS),echo lib$(LIBOBJ);)
