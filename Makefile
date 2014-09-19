@@ -44,8 +44,10 @@ clean:
 
 install:
 	@$(foreach LIBOBJ,$(LIBOBJS),echo "Installing lib$(LIBOBJ) to $(LIBDIR)"; $(INSTCMD) lib$(LIBOBJ) $(LIBDIR);)
+	@echo "Copying $(PROG) to $(EXECDIR)"
 	@$(INSTCMD) $(PROG) $(EXECDIR)
 
 uninstall:
-	@$(foreach LIBOBJ,$(LIBOBJS),echo "Deleting lib$(LIBOBJ) from $(LIBDIR)"; rm -f $(LIBDIR)/lib$(LIBOBJ);)	
+	@$(foreach LIBOBJ,$(LIBOBJS),echo "Deleting lib$(LIBOBJ) from $(LIBDIR)"; rm -f $(LIBDIR)/lib$(LIBOBJ);)
+	@echo "Deleting $(PROG) from $(EXECDIR)"
 	-@rm -f $(EXECDIR)/$(PROG)
