@@ -1,10 +1,10 @@
 CC=gcc
 INSTCMD=install -m 0755 -s
 PROG=electrotest
-SYSBITS=$(shell getconf LONG_BIT)
 #Detect if 64bit or 32bit system
 #Solution for this detection from
 #http://www.linuxquestions.org/questions/programming-9/how-can-make-makefile-detect-64-bit-os-679513/
+SYSBITS=$(shell getconf LONG_BIT)
 ifeq ($(SYSBITS),64)
 LIBDIR=/usr/lib64
 else
@@ -40,9 +40,6 @@ lib: $(LIBOBJS)
 
 clean:
 	-rm -f *.o *.so $(PROG)
-
-test:
-	@$(foreach LIBOBJ,$(LIBOBJS),echo lib$(LIBOBJ);)
 
 install:
 	@$(foreach LIBOBJ,$(LIBOBJS),echo "Installing lib$(LIBOBJ) to $(LIBDIR)"; $(INSTCMD) lib$(LIBOBJ) $(LIBDIR);)
