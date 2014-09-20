@@ -16,8 +16,8 @@ DEBUG=$(MAIN_DEBUG)
 CFLAGS=-Wall -fPIC $(DEBUG)
 LIBCFLAGS=$(CFLAGS) --shared
 LDFLAGS=-L .
-LIBS=-le_resistance -lpower -lresistance
-LIBOBJS=e_resistance.so power.so resistance.so
+LIBS=-lcomponent -lpower -lresistance
+LIBOBJS=component.so power.so resistance.so
 
 
 all: lib program
