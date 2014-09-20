@@ -7,7 +7,7 @@ int e_resistance(float orig_resistance, float *res_array)
 {
    int i,count=0,e=0;
    float e1=0,e2=0,e3=0,resistor2=0,resistor3=0;
-   float resistor1=orig_resistance;_resistance.c
+   float resistor1=orig_resistance;
     
         
    
