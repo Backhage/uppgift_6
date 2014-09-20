@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <math.h>
+
 
         // orig_resistance ersätts med tre seriekopplade resistorer 
 
@@ -20,14 +20,14 @@ int e_resistance(float orig_resistance, float *res_array)
           560000,680000,820000,1000000};
   
 
-    for(i=0;e1<resistor1;i++)                              //resistans för resistor ett 
-        e1=e12[i];
-        i-=4;
-        e1=e12[i];
-          if(e1>0)
+    for(i=0;e1<resistor1;)                              //resistans för resistor ett 
+        e1=e12[i++];
+          i-=4;
+          e1=e12[i];
+          if(e1>=1)
           {
-          resistor1= e1;
-          res_array[0]=resistor1;
+          resistor1=e1;
+          res_array[0]=e1;
           resistor2=orig_resistance-resistor1;
           }
           else
@@ -35,40 +35,39 @@ int e_resistance(float orig_resistance, float *res_array)
           res_array[0]=0;
           resistor2=orig_resistance;
           }
-
-   for(i=0;e2<resistor2&resistor2!=0;i++)                 //resistans för resistor två
-	e2=e12[i];
-        i-=2;
-        e2=e12[i];
-          if(e2>0)
+ 
+   for(i=0;e2<resistor2&resistor2>=1;)                 //resistans för resistor två
+	  e2=e12[i++];
+          i-=2;
+          e2=e12[i];
+          if(e2>=1)
           {
-          resistor2=e12[i];
-          res_array[1]=resistor2;
+          resistor2=e2;
+          res_array[1]=e2;
           resistor3=orig_resistance-resistor1-resistor2;
           }
           else
           {
           res_array[1]=0;
-          resistor3=orig_resistance;
+          resistor3=resistor2;
           }
     
+    
 
-   for(i=0;e3<resistor3&resistor3!=0;i++)              //resistans för resistor tre
-        e3=e12[i];
-          if(e3>0)
-          {
-          resistor3=e3;
-          res_array[2]=resistor3;
-          }
+   for(i=0;e3<resistor3&resistor3>=1;)              //resistans för resistor tre
+        e3=e12[i++];
+          if(e3>=1)
+            res_array[2]=e3;
           else
-          res_array[2]=0;
+            res_array[2]=0;
 
    for(i=0;i<3;i++)                                 //antal resistorer som behövdes för att ersätta orig_resistance
       {
       e=res_array[i];
-          if(e>0)
+          if(e>=1)
             count++;
       }
+
 
  return count;    
 }
