@@ -9,7 +9,7 @@ char *get_input(char *s)
 {
  char *inpbuff;
  inpbuff=malloc(1024);
- printf(s);
+ printf("%s", s);
  fgets(inpbuff,1024,stdin);
 
  if(strlen(inpbuff)<1)
@@ -41,7 +41,7 @@ char get_char(char *s)
  return(result);
 }
 
-int main(int argc, char *argv)
+int main(int argc, char *argv[])
 {
  int components,i,volt,count;
  char *question,conn;
@@ -84,4 +84,6 @@ int main(int argc, char *argv)
  free(question);
  free(array);
  free(res_array);
+
+ return 0;
 }
