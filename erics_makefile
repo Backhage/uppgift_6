@@ -1,9 +1,12 @@
+PROGRAM_NAME = electrotest
+LIBS = component.so power.so resistance.so
+
 all : lib program
 
-program : main.c lib
-	gcc -L. -Wl,-rpath=. -Wall -o electrotest main.c -lcomponent -lpower -lresistance
+program : main.c $(LIBS)
+	gcc -L. -Wl,-rpath=. -Wall -o $(PROGRAM_NAME) main.c -lcomponent -lpower -lresistance
 
-lib : component.so power.so resistance.so
+lib : $(LIBS)
 
 component.so : component.o
 	gcc -shared -o libcomponent.so component.o
@@ -22,3 +25,6 @@ resistance.so : resistance.o
 
 resistance.o : resistance.c resistance.h
 	gcc -c -Wall -Werror -fpic resistance.c
+
+clean : 
+	rm -f $(PROGRAM_NAME) *.o *.so
