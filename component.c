@@ -36,7 +36,7 @@ int e_resistance(float orig_resistance, float *res_array)
           resistor2=orig_resistance;
           }
  
-   for(i=0;e2<resistor2&resistor2>=1;)                 //resistans för resistor två
+	  for(i=0;(e2<resistor2)&(resistor2>=1);)                 //resistans för resistor två
 	  e2=e12[i++];
           i-=2;
           e2=e12[i];
@@ -54,7 +54,7 @@ int e_resistance(float orig_resistance, float *res_array)
     
     
 
-   for(i=0;e3<resistor3&resistor3>=1;)              //resistans för resistor tre
+	  for(i=0;(e3<resistor3)&(resistor3>=1);)              //resistans för resistor tre
         e3=e12[i++];
           if(e3>=1)
             res_array[2]=e3;

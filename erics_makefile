@@ -1,0 +1,24 @@
+all : lib program
+
+program : main.c lib
+	gcc -L. -Wl,-rpath=. -Wall -o electrotest main.c -lcomponent -lpower -lresistance
+
+lib : component.so power.so resistance.so
+
+component.so : component.o
+	gcc -shared -o libcomponent.so component.o
+
+component.o : component.c component.h
+	gcc -c -Wall -Werror -fpic component.c
+
+power.so : power.o
+	gcc -shared -o libpower.so power.o
+
+power.o : power.c power.h
+	gcc -c -Wall -Werror -fpic power.c
+
+resistance.so : resistance.o
+	gcc -shared -o libresistance.so resistance.o
+
+resistance.o : resistance.c resistance.h
+	gcc -c -Wall -Werror -fpic resistance.c
