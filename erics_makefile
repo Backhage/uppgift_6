@@ -1,30 +1,25 @@
 PROGRAM_NAME = electrotest
 LIBS = component.so power.so resistance.so
+LIB_DIR = lib
 
-all : lib program
-
-program : main.c $(LIBS)
-	gcc -L. -Wl,-rpath=. -Wall -o $(PROGRAM_NAME) main.c -lcomponent -lpower -lresistance
+all : lib movelibs program
 
 lib : $(LIBS)
 
-component.so : component.o
-	gcc -shared -o libcomponent.so component.o
+%.so : %.o
+	gcc -shared $< -o lib$@
 
-component.o : component.c component.h
-	gcc -c -Wall -Werror -fpic component.c
+%.o : %.c %.h
+	gcc -c -Wall -Werror -fpic $< -o $@
 
-power.so : power.o
-	gcc -shared -o libpower.so power.o
+movelibs :
+	mkdir -p $(LIB_DIR)
+	mv libcomponent.so $(LIB_DIR)
+	mv libpower.so $(LIB_DIR)
+	mv libresistance.so $(LIB_DIR)
 
-power.o : power.c power.h
-	gcc -c -Wall -Werror -fpic power.c
-
-resistance.so : resistance.o
-	gcc -shared -o libresistance.so resistance.o
-
-resistance.o : resistance.c resistance.h
-	gcc -c -Wall -Werror -fpic resistance.c
+program : main.c $(LIBS)
+	gcc -L./$(LIB_DIR) -Wl,-rpath=./$(LIB_DIR) -Wall -o $(PROGRAM_NAME) main.c -lcomponent -lpower -lresistance
 
 clean : 
-	rm -f $(PROGRAM_NAME) *.o *.so
+	rm -rf $(PROGRAM_NAME) *.o *.so $(LIB_DIR)
