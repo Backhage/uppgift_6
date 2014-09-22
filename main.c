@@ -1,13 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "resistance.h"
-#include "power.h"
 #include "component.h"
+#include "power.h"
+#include "resistance.h"
 
 /*---------------------------------------------------------------------------*/
 #define INPUT_BUFFER_SIZE 1024
-#define MAX_REPLACEMENT_RESISTORS 3
 
 /*---------------------------------------------------------------------------*/
 static int   query_user_int(char *user_query_p);
@@ -26,7 +25,8 @@ int main(int argc, char *argv[])
   float resistance = 0;
   float power = 0;
   int no_of_replacement_resistors = 0;
-  float *replacement_resistors_p = 
+  const int MAX_REPLACEMENT_RESISTORS = 3;
+  float *replacement_resistors_p =
     malloc(MAX_REPLACEMENT_RESISTORS * sizeof(float));
 
   voltage = query_user_int("Ange spänningskälla i V: ");
@@ -73,30 +73,6 @@ int main(int argc, char *argv[])
   free(replacement_resistors_p);
 
   return 0;
-}
-/*---------------------------------------------------------------------------*/
-void print_replacement_resistors(int no_of_resistors, float* values_p)
-{
-  int i = 0;
-  for(i = 0; i < no_of_resistors; i++)
-  {
-    printf("%.0f ", values_p[i]);
-  }
-  printf("\n");
-}
-
-/*---------------------------------------------------------------------------*/
-void get_resistor_values(int no_of_resistors, float *values_p)
-{
-  int i = 0;
-  char *user_input_p = malloc(INPUT_BUFFER_SIZE);
-
-  for (i = 0; i < no_of_resistors; i++)
-  {
-    snprintf(user_input_p, INPUT_BUFFER_SIZE, "Komponent %d i ohm: ", i+1);
-    values_p[i] = query_user_int(user_input_p);
-  }
-  free(user_input_p);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -145,4 +121,29 @@ char *query_user(char *user_query_p)
   }
 
   return(input_buffer);
+}
+
+/*---------------------------------------------------------------------------*/
+void get_resistor_values(int no_of_resistors, float *values_p)
+{
+  int i = 0;
+  char *user_input_p = malloc(INPUT_BUFFER_SIZE);
+
+  for (i = 0; i < no_of_resistors; i++)
+  {
+    snprintf(user_input_p, INPUT_BUFFER_SIZE, "Komponent %d i ohm: ", i+1);
+    values_p[i] = query_user_int(user_input_p);
+  }
+  free(user_input_p);
+}
+
+/*---------------------------------------------------------------------------*/
+void print_replacement_resistors(int no_of_resistors, float* values_p)
+{
+  int i = 0;
+  for(i = 0; i < no_of_resistors; i++)
+  {
+    printf("%.0f ", values_p[i]);
+  }
+  printf("\n");
 }
