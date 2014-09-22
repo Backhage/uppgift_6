@@ -11,13 +11,15 @@ LDFLAGS=-L lib
 LIBS=-lcomponent -lpower -lresistance
 LIBOBJS=component.so power.so resistance.so
 
+
 all: lib program
 
 program: main.o
-	$(CC) $(CFLAGS) -Wl,-rpath,lib $(LDFLAGS) -o $(PROG) main.o $(LIBS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PROG) main.o $(LIBS)
 
 main.o: main.c resistance.h power.h component.h
 	$(CC) $(CFLAGS) -c main.c
+
 
 .PRECIOUS: %.o
 
