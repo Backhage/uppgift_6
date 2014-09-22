@@ -15,7 +15,7 @@ EXECDIR=/usr/bin
 DEBUG=$(MAIN_DEBUG)
 CFLAGS=-Wall -fPIC $(DEBUG)
 LIBCFLAGS=$(CFLAGS) --shared
-LDFLAGS=-L .
+LDFLAGS=-L lib
 LIBS=-lcomponent -lpower -lresistance
 LIBOBJS=component.so power.so resistance.so
 
@@ -23,7 +23,7 @@ LIBOBJS=component.so power.so resistance.so
 all: lib program
 
 program: main.o
-	$(CC) $(CFLAGS) $(LDFLAGS) $(LIBS) -o $(PROG) main.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PROG) main.o $(LIBS)
 
 main.o: main.c resistance.h power.h component.h
 	$(CC) -c main.c
@@ -31,19 +31,22 @@ main.o: main.c resistance.h power.h component.h
 
 .PRECIOUS: %.o
 
-lib: $(LIBOBJS)
+lib: MKLIBDIR $(LIBOBJS)
+
+MKLIBDIR:
+	mkdir -p lib
 
 %.so: %.o
-	$(CC) $(LIBCFLAGS) $< -o lib$(basename $@).so
+	$(CC) $(LIBCFLAGS) $< -o lib/lib$(basename $@).so
 
 %.o: %.c %.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 clean:
-	-rm -f *.o *.so $(PROG)
+	-rm -rf *.o *.so $(PROG) lib
 
 install:
-	@$(foreach LIBOBJ,$(LIBOBJS),echo "Installing lib$(LIBOBJ) to $(LIBDIR)"; $(INSTCMD) lib$(LIBOBJ) $(LIBDIR);)
+	@$(foreach LIBOBJ,$(LIBOBJS),echo "Installing lib$(LIBOBJ) to $(LIBDIR)"; $(INSTCMD) lib/lib$(LIBOBJ) $(LIBDIR);)
 	@echo "Copying $(PROG) to $(EXECDIR)"
 	@$(INSTCMD) $(PROG) $(EXECDIR)
 
