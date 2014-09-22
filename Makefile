@@ -23,7 +23,7 @@ LIBOBJS=component.so power.so resistance.so
 all: lib program
 
 program: main.o
-	$(CC) $(CFLAGS) $(LDFLAGS) $(LIBS) -o $(PROG) main.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PROG) main.o $(LIBS)
 
 main.o: main.c resistance.h power.h component.h
 	$(CC) -c main.c
