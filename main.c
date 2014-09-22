@@ -12,7 +12,7 @@
 static int   query_user_int(char *user_query_p);
 static char  query_user_char(char *user_query_p);
 static char *query_user(char *user_query_p);
-static void  get_resistor_values(int no_of_resistors, float *values_p);
+static void  query_resistor_values(int no_of_resistors, float *values_p);
 static void  print_replacement_resistors(int no_of_resistors, float* values_p);
 
 /*---------------------------------------------------------------------------*/
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
   no_of_resistors = query_user_int("Antal komponenter: ");
 
   resistors_p = malloc(no_of_resistors * sizeof(float));
-  get_resistor_values(no_of_resistors, resistors_p);
+  query_resistor_values(no_of_resistors, resistors_p);
 
   resistance = calc_resistance(
     no_of_resistors,
@@ -124,7 +124,7 @@ char *query_user(char *user_query_p)
 }
 
 /*---------------------------------------------------------------------------*/
-void get_resistor_values(int no_of_resistors, float *values_p)
+void query_resistor_values(int no_of_resistors, float *values_p)
 {
   int i = 0;
   char *user_input_p = malloc(INPUT_BUFFER_SIZE);
