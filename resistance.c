@@ -5,6 +5,7 @@
 
 /*---------------------------------------------------------------------------*/
 static bool validParamsSupplied(int count, char conn, float *array);
+static float getResistance(int count, char conn, float *array);
 static float getSerialResistorValue(int count, float *resistors);
 static float getParallelResistorValue(int count, float *resistors);
 
@@ -12,28 +13,13 @@ static float getParallelResistorValue(int count, float *resistors);
 float calc_resistance(int count, char conn, float *array)
 {
   const int ERROR_CODE = -1;
-  float resistance = 0;
 
   if (!validParamsSupplied(count, conn, array))
   {
     return ERROR_CODE;
   }
 
-  if ('S' == conn)
-  {
-    resistance = getSerialResistorValue(count, array);
-  }
-  else if ('P' == conn)
-  {
-    resistance = getParallelResistorValue(count, array);
-  }
-  else
-  {
-    /* If we get here there is a bug in the params check. Abort! */
-    assert(false);
-  }
-
-  return resistance;
+  return getResistance(count, conn, array);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -54,6 +40,27 @@ bool validParamsSupplied(int count, char conn, float *array)
   }
 
   return isValid;
+}
+
+/*---------------------------------------------------------------------------*/
+float getResistance(int count, char conn, float *array)
+{
+  float resistance = 0.0;
+  if ('S' == conn)
+  {
+    resistance = getSerialResistorValue(count, array);
+  }
+  else if ('P' == conn)
+  {
+    resistance = getParallelResistorValue(count, array);
+  }
+  else
+  {
+    /* If we get here there is a bug in the params check. Abort! */
+    assert(false);
+  }
+
+  return resistance;
 }
 
 /*---------------------------------------------------------------------------*/
