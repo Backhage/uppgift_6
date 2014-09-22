@@ -1,15 +1,7 @@
 CC=gcc
 INSTCMD=install -m 0755 -s
 PROG=electrotest
-#Detect if 64bit or 32bit system
-#Solution for this detection from
-#http://www.linuxquestions.org/questions/programming-9/how-can-make-makefile-detect-64-bit-os-679513/
-SYSBITS=$(shell getconf LONG_BIT)
-ifeq ($(SYSBITS),64)
-LIBDIR=/usr/lib64
-else
 LIBDIR=/usr/lib
-endif
 #MAIN_DEBUG=-D _MAIN_DEBUG__
 EXECDIR=/usr/bin
 DEBUG=$(MAIN_DEBUG)
