@@ -26,7 +26,7 @@ program: main.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PROG) main.o $(LIBS)
 
 main.o: main.c resistance.h power.h component.h
-	$(CC) -c main.c
+	$(CC) $(CFLAGS) -c main.c
 
 
 .PRECIOUS: %.o
