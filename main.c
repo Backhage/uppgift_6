@@ -140,10 +140,12 @@ void query_resistor_values(int no_of_resistors, float *values_p)
 /*---------------------------------------------------------------------------*/
 void print_replacement_resistors(int no_of_resistors, float* values_p)
 {
+  
   int i = 0;
-  for(i = 0; i < no_of_resistors; i++)
+  for(i = 0; i < 3; i++)
   {
-    printf("%.0f ", values_p[i]);
+     if(values_p[i])
+    printf("%.1f ", values_p[i]);
   }
   printf("\n");
 }
