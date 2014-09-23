@@ -142,7 +142,7 @@ void calculate_output_data(struct input_data_s *input_data_p,
       (-1 == output_data_p->power)      ||
       ( 0 == output_data_p->no_of_replacement_resistors))
   {
-    fprintf(stderr, "FEL: Kunde inte beräkna utdata. "\
+    fprintf(stderr, "FEL: Kunde inte ber\u00E4kna utdata. "\
 	    "Kontrollera inparametrarna.\nAvslutar programmet.\n");
     exit(EXIT_FAILURE);
   }
