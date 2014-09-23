@@ -160,7 +160,7 @@ void print_output_data(struct output_data_s *output_data_p)
 void print_replacement_resistors(int no_of_resistors, float* values_p)
 {
   int i = 0;
-  for(i = 0; i < 3; i++)
+  for(i = 0; i < no_of_resistors; i++)
   {
     if (values_p[i] > 0)
     {
