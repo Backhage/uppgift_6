@@ -6,146 +6,166 @@
 #include "resistance.h"
 
 /*---------------------------------------------------------------------------*/
-#define INPUT_BUFFER_SIZE 1024
+struct input_data_s
+{
+  int voltage;
+  char connection_type;
+  int no_of_resistors;
+  float *resistors_p;
+};
+
+struct output_data_s
+{
+  float resistance;
+  float power;
+  int no_of_replacement_resistors;
+  float *replacement_resistors_p;
+};
 
 /*---------------------------------------------------------------------------*/
-static int   query_user_int(char *user_query_p);
-static char  query_user_char(char *user_query_p);
-static char *query_user(char *user_query_p);
-static void  query_resistor_values(int no_of_resistors, float *values_p);
-static void  print_replacement_resistors(int no_of_resistors, float* values_p);
+static void get_data_from_user(struct input_data_s *input_data_p);
+static void calculate_output_data(struct input_data_s *input_data_p,
+				  struct output_data_s *output_data_p);
+static void print_output_data(struct output_data_s *output_data);
+static int  get_input_int(void);
+static char get_input_char(void);
+static float* query_resistors(int no_of_resistors);
+static float get_input_float(void);
+static void print_replacement_resistors(int no_of_resistors, float* values_p);
 
 /*---------------------------------------------------------------------------*/
 int main(int argc, char *argv[])
 {
-  int voltage = 0;
-  char connection_type = '\0';
-  int no_of_resistors = 0;
-  float *resistors_p = NULL;
-  float resistance = 0;
-  float power = 0;
-  int no_of_replacement_resistors = 0;
-  const int MAX_REPLACEMENT_RESISTORS = 3;
-  float *replacement_resistors_p =
-    malloc(MAX_REPLACEMENT_RESISTORS * sizeof(float));
+  struct input_data_s input_data = {0, '\0', 0, NULL};
+  struct output_data_s output_data = {0.0, 0.0, 0, NULL};
+  output_data.replacement_resistors_p = malloc(3 * sizeof(float));
 
-  voltage = query_user_int("Ange spänningskälla i V: ");
-  connection_type = query_user_char("Ange koppling[S | P]: ");
-  no_of_resistors = query_user_int("Antal komponenter: ");
+  get_data_from_user(&input_data);
+  calculate_output_data(&input_data, &output_data);
+  print_output_data(&output_data);
 
-  resistors_p = malloc(no_of_resistors * sizeof(float));
-  query_resistor_values(no_of_resistors, resistors_p);
+  free(input_data.resistors_p);
+  free(output_data.replacement_resistors_p);
+  exit(EXIT_SUCCESS);
+}
 
-  resistance = calc_resistance(
-    no_of_resistors,
-    connection_type,
-    resistors_p
+/*---------------------------------------------------------------------------*/
+void get_data_from_user(struct input_data_s *input_data_p)
+{
+  printf("Ange sp\u00E4nningsk\u00E4lla i V: ");
+  input_data_p->voltage = get_input_int();
+  printf("Ange koppling[S | P]: ");
+  input_data_p->connection_type = get_input_char();
+  printf("Antal komponenter: ");
+  input_data_p->no_of_resistors = get_input_int();
+  input_data_p->resistors_p = query_resistors(input_data_p->no_of_resistors);
+}
+
+/*---------------------------------------------------------------------------*/
+int get_input_int(void)
+{
+  int retval = 0;
+  char ch = '\0';
+
+  scanf("%d", &retval);
+  while ((ch=getchar()) != EOF && ch != '\n')
+    ;
+
+  return retval;
+}
+
+/*---------------------------------------------------------------------------*/
+char get_input_char(void)
+{
+  char retval = '\0';
+  char ch = '\0';
+
+  scanf("%c", &retval);
+  while ((ch=getchar()) != EOF && ch != '\n')
+    ;
+
+  return retval;
+}
+
+/*---------------------------------------------------------------------------*/
+float* query_resistors(int no_of_resistors)
+{
+  float* resistors_p = malloc(no_of_resistors * sizeof(float));
+  int i = 0;
+  for (i = 0; i < no_of_resistors; ++i)
+  {
+    printf("Komponent %d i ohm: ", i+1);
+    resistors_p[i] = get_input_float();
+  }
+
+  return resistors_p;
+}
+
+/*---------------------------------------------------------------------------*/
+float get_input_float(void)
+{
+  float retval = 0.0;
+  char ch = '\0';
+
+  scanf("%f", &retval);
+  while ((ch=getchar()) != EOF && ch != '\n')
+    ;
+
+  return retval;
+}
+
+/*---------------------------------------------------------------------------*/
+void calculate_output_data(struct input_data_s *input_data_p,
+			   struct output_data_s *output_data_p)
+{
+  output_data_p->resistance = calc_resistance(
+    input_data_p->no_of_resistors,
+    input_data_p->connection_type,
+    input_data_p->resistors_p
     );
-  power = calc_power_r(voltage, resistance);
-  no_of_replacement_resistors = e_resistance(
-    resistance,
-    replacement_resistors_p
+
+  output_data_p->power = calc_power_r(
+    input_data_p->voltage,
+    output_data_p->resistance
     );
 
-#ifdef _MAIN_DEBUG__
-  printf("Antal ersättningsresistanser: %d",
-	 no_of_replacement_resistors);
-#endif
+  output_data_p->no_of_replacement_resistors = e_resistance(
+    output_data_p->resistance,
+    output_data_p->replacement_resistors_p
+    );
 
-  printf("Ersättningsresistans: %.2f ohm\n", resistance);
-  printf("Effekt: %.2f W\n", power);
-  printf("Ersättningsresistanser i E12-serien kopplade i serie: ");
+  if ((-1 == output_data_p->resistance) ||
+      (-1 == output_data_p->power)      ||
+      ( 0 == output_data_p->no_of_replacement_resistors))
+  {
+    fprintf(stderr, "FEL: Kunde inte beräkna utdata. "\
+	    "Kontrollera inparametrarna.\nAvslutar programmet.\n");
+    exit(EXIT_FAILURE);
+  }
+}
+
+/*---------------------------------------------------------------------------*/
+void print_output_data(struct output_data_s *output_data_p)
+{
+  printf("Ers\u00E4ttningsresistans: %.2f ohm\n", output_data_p->resistance);
+  printf("Effekt: %.2f W\n", output_data_p->power);
+  printf("Ers\u00E4ttningsresistanser i E12-serien kopplade i serie: ");
   print_replacement_resistors(
-    no_of_replacement_resistors,
-    replacement_resistors_p
+    output_data_p->no_of_replacement_resistors,
+    output_data_p->replacement_resistors_p
     );
-
-#ifdef _MAIN_DEBUG__
-  int i = 0;
-  for(i = 0; i < no_of_resistors; i++)
-  {
-    printf("Komponent %d: %.2f\n", i, resistors_p[i]);
-  }
-  printf("Vald koppling: %c\n", connection_type);
-#endif
-
-  free(resistors_p);
-  free(replacement_resistors_p);
-
-  return 0;
-}
-
-/*---------------------------------------------------------------------------*/
-int query_user_int(char *user_query_p)
-{
-  int result = 0;
-  char *buffer = NULL;
-  buffer = query_user(user_query_p);
-  if (NULL == buffer)
-  {
-    return(-1);
-  }
-  result = atoi(buffer);
-  free(buffer);
-
-  return(result);
-}
-
-/*---------------------------------------------------------------------------*/
-char query_user_char(char *user_query_p)
-{
-  char *buffer = NULL;
-  char result = '\0';
-  buffer = query_user(user_query_p);
-  if (NULL == buffer)
-  {
-    return(-1);
-  }
-  result = buffer[0];
-  free(buffer);
-
-  return(result);
-}
-
-/*---------------------------------------------------------------------------*/
-char *query_user(char *user_query_p)
-{
-  char *input_buffer = malloc(INPUT_BUFFER_SIZE);
-  printf("%s", user_query_p);
-  fgets(input_buffer, INPUT_BUFFER_SIZE, stdin);
-
-  if (strlen(input_buffer) < 1)
-  {
-    free(input_buffer);
-    return(NULL);
-  }
-
-  return(input_buffer);
-}
-
-/*---------------------------------------------------------------------------*/
-void query_resistor_values(int no_of_resistors, float *values_p)
-{
-  int i = 0;
-  char *user_input_p = malloc(INPUT_BUFFER_SIZE);
-
-  for (i = 0; i < no_of_resistors; i++)
-  {
-    snprintf(user_input_p, INPUT_BUFFER_SIZE, "Komponent %d i ohm: ", i+1);
-    values_p[i] = query_user_int(user_input_p);
-  }
-  free(user_input_p);
 }
 
 /*---------------------------------------------------------------------------*/
 void print_replacement_resistors(int no_of_resistors, float* values_p)
 {
-  
   int i = 0;
   for(i = 0; i < 3; i++)
   {
-     if(values_p[i])
-    printf("%.1f ", values_p[i]);
+    if (values_p[i] > 0)
+    {
+      printf("%.1f ", values_p[i]);
+    }
   }
   printf("\n");
 }

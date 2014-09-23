@@ -5,7 +5,7 @@ LIBDIR=/usr/lib
 #MAIN_DEBUG=-D _MAIN_DEBUG__
 EXECDIR=/usr/bin
 DEBUG=$(MAIN_DEBUG)
-CFLAGS=-Wall -fPIC $(DEBUG)
+CFLAGS=-Wall -fPIC -std=c99 $(DEBUG)
 LIBCFLAGS=$(CFLAGS) --shared
 LDFLAGS=-L lib
 LIBS=-lcomponent -lpower -lresistance
