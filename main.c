@@ -6,6 +6,9 @@
 #include "resistance.h"
 
 /*---------------------------------------------------------------------------*/
+#define MAX_REPLACEMENT_RESISTORS
+
+/*---------------------------------------------------------------------------*/
 struct input_data_s
 {
   int voltage;
@@ -31,14 +34,15 @@ static int  get_input_int(void);
 static char get_input_char(void);
 static float* query_resistors(int no_of_resistors);
 static float get_input_float(void);
-static void print_replacement_resistors(int no_of_resistors, float* values_p);
+static void print_replacement_resistors(float* values_p);
 
 /*---------------------------------------------------------------------------*/
 int main(int argc, char *argv[])
 {
   struct input_data_s input_data = {0, '\0', 0, NULL};
   struct output_data_s output_data = {0.0, 0.0, 0, NULL};
-  output_data.replacement_resistors_p = malloc(3 * sizeof(float));
+  output_data.replacement_resistors_p =
+    malloc(MAX_REPLACEMENT_RESISTORS * sizeof(float));
 
   get_data_from_user(&input_data);
   calculate_output_data(&input_data, &output_data);
@@ -151,16 +155,15 @@ void print_output_data(struct output_data_s *output_data_p)
   printf("Effekt: %.2f W\n", output_data_p->power);
   printf("Ers\u00E4ttningsresistanser i E12-serien kopplade i serie: ");
   print_replacement_resistors(
-    output_data_p->no_of_replacement_resistors,
     output_data_p->replacement_resistors_p
     );
 }
 
 /*---------------------------------------------------------------------------*/
-void print_replacement_resistors(int no_of_resistors, float* values_p)
+void print_replacement_resistors(float* values_p)
 {
   int i = 0;
-  for(i = 0; i < no_of_resistors; i++)
+  for(i = 0; i < MAX_REPLACEMENT_RESISTORS; i++)
   {
     if (values_p[i] > 0)
     {
