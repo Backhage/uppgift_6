@@ -6,7 +6,7 @@
 #include "resistance.h"
 
 /*---------------------------------------------------------------------------*/
-#define MAX_REPLACEMENT_RESISTORS
+#define MAX_REPLACEMENT_RESISTORS 3
 
 /*---------------------------------------------------------------------------*/
 struct input_data_s
