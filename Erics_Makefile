@@ -1,0 +1,36 @@
+PROGRAM_FILE = electrotest
+
+# Target all - builds the libraries, moves them to a subdir, and builds the program.
+all : LIB_DIR = lib
+all : lib movelibs program
+
+# Target install - Builds and installs the libs and the program
+install : LIB_DIR = /usr/lib
+install : lib movelibs program
+	mv $(PROGRAM_FILE) /usr/bin/$(PROGRAM_FILE)
+
+# Target lib - builds the libraries.
+lib : libcomponent.so libpower.so libresistance.so
+
+# Common target for libcomponent.so, libpower.so, and libresistance.so.
+lib%.so : %.o
+	gcc -shared -o $@ $<
+
+# Common target for component.o, power.o, and resistance.o.
+%.o : %.c %.h
+	gcc -Wall -Werror -std=c99 -c -fPIC $<
+
+# Moves libraries to subdir, creates the subdir if needed.
+movelibs :
+	mkdir -p $(LIB_DIR)
+	mv -f libcomponent.so $(LIB_DIR)
+	mv -f libpower.so $(LIB_DIR)
+	mv -f libresistance.so $(LIB_DIR)
+
+# Builds the program
+program : main.c
+	gcc -L $(LIB_DIR) -Wall -Werror -Wl,-rpath,$(LIB_DIR) -std=c99 -o $(PROGRAM_FILE) main.c -lcomponent -lpower -lresistance
+
+# Target clean - removes build artifacts, libs, and program file.
+clean :
+	rm -rf *.o *.so lib $(PROGRAM_FILE)
