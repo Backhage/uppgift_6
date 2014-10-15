@@ -2,16 +2,15 @@ CC=gcc
 INSTCMD=install -m 0755 -s
 PROG=electrotest
 LIBDIR=/usr/lib
-#MAIN_DEBUG=-D _MAIN_DEBUG__
 EXECDIR=/usr/bin
 DEBUG=$(MAIN_DEBUG)
 CFLAGS=-Wall -fPIC -std=c99 $(DEBUG)
 LIBCFLAGS=$(CFLAGS) --shared
-LDFLAGS=-L lib
+LDFLAGS=-L ./lib -Wl,-rpath=./lib
 LIBS=-lcomponent -lpower -lresistance
 LIBOBJS=component.so power.so resistance.so
 
-
+.PHONY: all
 all: lib program
 
 program: main.o
@@ -19,7 +18,6 @@ program: main.o
 
 main.o: main.c resistance.h power.h component.h
 	$(CC) $(CFLAGS) -c main.c
-
 
 .PRECIOUS: %.o
 
